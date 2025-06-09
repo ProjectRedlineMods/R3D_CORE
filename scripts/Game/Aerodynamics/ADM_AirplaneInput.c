@@ -237,7 +237,7 @@ class ADM_AirplaneInput : ScriptComponent
         inputManager.AddActionListener("R3D_AirplaneFlaps", 			EActionTrigger.VALUE,  FlapInput);
         inputManager.AddActionListener("R3D_AirplaneSpeedBrake", 		EActionTrigger.VALUE,  SpeedBrakeInput);
         inputManager.AddActionListener("R3D_AirplaneToggleGear", 		EActionTrigger.DOWN,   ToggleGear);
-		inputManager.AddActionListener("R3D_AirplaneTrimModifier",		EActionTrigger.VALUE,  TrimModifier);
+		inputManager.AddActionListener("R3D_AirplaneTrimModifierNew",	EActionTrigger.VALUE,  TrimModifier);
 		inputManager.AddActionListener("R3D_AirplaneTrimReset",			EActionTrigger.DOWN,   TrimReset);
 		inputManager.AddActionListener("R3D_AirplaneSteering",			EActionTrigger.VALUE,  Steering);
 		inputManager.AddActionListener("R3D_AirplaneWheelBrake",		EActionTrigger.VALUE,  WheelBrake);
