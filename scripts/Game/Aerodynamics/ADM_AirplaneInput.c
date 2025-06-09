@@ -83,6 +83,17 @@ class ADM_AirplaneInput : ScriptComponent
 		return input;
 	}
 	
+	bool HasAnyInput()
+	{
+		return m_fAileronInput != 0 
+					|| m_fElevatorInput != 0 
+					|| m_fRudderInput != 0 
+					|| m_fThrustInput != 0 
+					|| m_fSpeedBrakeInput != 0 
+					|| m_fFlapInput != 0 
+					|| m_fSteeringInput != 0;
+	}
+	
 	void AileronInput(float aileron = 0.0, EActionTrigger reason = 0) 
 	{
 		if (!IsControlActive()) return;
