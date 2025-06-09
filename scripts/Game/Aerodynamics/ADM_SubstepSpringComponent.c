@@ -15,7 +15,7 @@ class ADM_SubstepSpringComponent: ADM_RigidbodyComponent
 		super.OnPostInit(owner);
 		SetEventMask(owner, EntityEvent.FRAME);
 		
-		COM = owner.CoordToParent(m_Physics.GetCenterOfMass());
+		COM = owner.CoordToParent(owner.GetPhysics().GetCenterOfMass());
 		m_fNeutralXposition = COM[0] - m_fInitialDisplacement;
 	}
 	

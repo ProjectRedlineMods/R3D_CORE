@@ -14,7 +14,6 @@ class R3D_WeaponRecoilComponent : ScriptComponent
 	protected ref PointInfo m_vRecoilPosition;
 	
 	protected IEntity m_Owner = null;
-	protected Physics m_Physics = null;
 	protected BaseMuzzleComponent m_Muzzle = null;
 	protected vector m_vOriginMat[4];
 	private int m_iPreviousAmmoCount = 0;
@@ -24,7 +23,6 @@ class R3D_WeaponRecoilComponent : ScriptComponent
 		super.OnPostInit(owner);
 		
 		m_Owner = owner;
-		m_Physics = owner.GetPhysics();
 			
 		if (m_vRecoilPosition)	
 		{
@@ -60,7 +58,7 @@ class R3D_WeaponRecoilComponent : ScriptComponent
 	
 	override void EOnSimulate(IEntity owner, float timeSlice)
 	{
-		if (!m_Physics || !m_Muzzle) return;
+		if (!owner.GetPhysics() || !m_Muzzle) return;
 		
 		int currentAmmoCount = m_Muzzle.GetAmmoCount();
 		int deltaAmmo = currentAmmoCount - m_iPreviousAmmoCount;
@@ -69,7 +67,7 @@ class R3D_WeaponRecoilComponent : ScriptComponent
 		{
 			vector position = owner.CoordToParent(m_vOriginMat[3]);
 			vector force = owner.VectorToParent(m_vOriginMat[2]) * -1 * m_fRecoilForce;
-			m_Physics.ApplyImpulseAt(position, force * timeSlice);
+			owner.GetPhysics().ApplyImpulseAt(position, force * timeSlice);
 		}
 		
 		m_iPreviousAmmoCount = currentAmmoCount;

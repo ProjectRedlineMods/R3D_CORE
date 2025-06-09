@@ -161,11 +161,11 @@ class R3D_RocketMoveComponent: ADM_RigidbodyComponent
 	
 	void Launch()
 	{
-		if (!m_Physics)
+		if (!GetOwner().GetPhysics())
 			return;
 		
 		m_fLaunchTime = m_World.GetTimestamp();
-		m_Physics.SetActive(true);
+		GetOwner().GetPhysics().SetActive(true);
 	}
 	
 	void Setup(IEntity owner)
@@ -181,10 +181,10 @@ class R3D_RocketMoveComponent: ADM_RigidbodyComponent
 			m_vExhaustPosition = exhaustTransform[3];
 		}
 			
-		if (!m_Physics)
+		if (!owner.GetPhysics())
 			return;
 		
-		m_Physics.SetMass(m_fDryMass + m_fPropellantMass);
+		owner.GetPhysics().SetMass(m_fDryMass + m_fPropellantMass);
 	}
 	
 	vector GetWindVector()

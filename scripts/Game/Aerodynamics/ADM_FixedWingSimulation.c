@@ -180,17 +180,28 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 	
 	override event protected bool OnTicksOnRemoteProxy() { return true; };
 	
+	override event protected void EOnFrame(IEntity owner, float timeSlice)
+	{
+		super.EOnFrame(owner, timeSlice);
+		
+		if (!owner.GetPhysics() || !m_AirplaneController || !m_AirplaneController.GetAirplaneInput())
+			return;
+		
+		if (m_AirplaneController.GetAirplaneInput().HasAnyInput() && !owner.GetPhysics().IsActive())
+		{
+			owner.GetPhysics().SetActive(true);
+		}
+	}
+	
 	//------------------------------------------------------------------------------------------------
 	ref array<ref Shape> debugShapes = {};
 	ref array<ref DebugTextWorldSpace> debugText = {};
 	void Simulate(float timeSlice)
 	{
-		auto owner = GetOwner();
+		IEntity owner = GetOwner();
 		if (!owner) return;
-		auto physics = owner.GetPhysics();
-		if (!physics) return;
 
-		if (!physics || !physics.IsActive() || !m_AirplaneController || !m_AirplaneController.GetAirplaneInput())
+		if (!owner.GetPhysics() || !m_AirplaneController || !m_AirplaneController.GetAirplaneInput() || !owner.GetPhysics().IsActive())
 			return;
 		
 		if (m_bIsDestroyed)
@@ -204,11 +215,11 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 		debugText.Clear();
 		//#endif
 		
-		vector com = owner.CoordToParent(physics.GetCenterOfMass());
+		vector com = owner.CoordToParent(owner.GetPhysics().GetCenterOfMass());
 		vector coa = owner.CoordToParent(m_vAerodynamicCenter + m_vAerodynamicCenterOffset);
 		
 		vector wind = GetWindVector();
-		vector absoluteVelocity = physics.GetVelocity();
+		vector absoluteVelocity = owner.GetPhysics().GetVelocity();
 		vector flowVelocity = absoluteVelocity + wind;
 		vector flowVelocityLocal = owner.VectorToLocal(flowVelocity);
 		
@@ -227,7 +238,7 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 				vector vSpan = owner.VectorToParent(curSection.m_vSpan);
 				vector aerocenter = owner.CoordToParent(curSection.m_vAerodynamicCenter);
 											
-				vector sectionFlowVelocity = physics.GetVelocityAt(aerocenter) + wind;
+				vector sectionFlowVelocity = owner.GetPhysics().GetVelocityAt(aerocenter) + wind;
 				vector sectionFlowVelocityLocal = owner.VectorToLocal(sectionFlowVelocity);
 				float sectionDynamicPressure = 1/2 * density * sectionFlowVelocity.LengthSq(); // [Pa]
 				
@@ -279,8 +290,8 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 				
 				if (absoluteVelocity.LengthSq() > 1)
 				{
-					physics.ApplyImpulseAt(aerocenter, vLift * timeSlice);
-					physics.ApplyImpulseAt(aerocenter, vDrag * timeSlice);
+					owner.GetPhysics().ApplyImpulseAt(aerocenter, vLift * timeSlice);
+					owner.GetPhysics().ApplyImpulseAt(aerocenter, vDrag * timeSlice);
 				}
 				
 				//#ifdef WORKBENCH
@@ -312,8 +323,8 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 		
 		if (absoluteVelocity.LengthSq() > 1)
 		{
-			physics.ApplyImpulseAt(coa, vLongitudinalDrag * timeSlice);
-			physics.ApplyImpulseAt(coa, vSideslipDrag * timeSlice);
+			owner.GetPhysics().ApplyImpulseAt(coa, vLongitudinalDrag * timeSlice);
+			owner.GetPhysics().ApplyImpulseAt(coa, vSideslipDrag * timeSlice);
 		}
 		
 		//#ifdef WORKBENCH
@@ -340,7 +351,7 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 				
 				if (absoluteVelocity.LengthSq() > 1)
 				{
-					physics.ApplyImpulseAt(gearMat[3], vDrag * timeSlice);
+					owner.GetPhysics().ApplyImpulseAt(gearMat[3], vDrag * timeSlice);
 				}
 				
 				//#ifdef WORKBENCH
@@ -435,10 +446,8 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 	{
 		auto owner = GetOwner();
 		if (!owner) return vector.Zero;
-		auto physics = owner.GetPhysics();
-		if (!physics) return vector.Zero;
 		
-		return owner.CoordToParent(physics.GetCenterOfMass()); // world coordinates
+		return owner.CoordToParent(owner.GetPhysics().GetCenterOfMass()); // world coordinates
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -446,10 +455,8 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 	{		
 		auto owner = GetOwner();
 		if (!owner) return vector.Zero;
-		auto physics = owner.GetPhysics();
-		if (!physics) return vector.Zero;
 		
-		return physics.GetVelocityAt(pos); 
+		return owner.GetPhysics().GetVelocityAt(pos); 
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -472,8 +479,6 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 
 	void Draw(IEntity owner)
 	{
-		auto physics = owner.GetPhysics();
-
 		if (!m_Wings || !owner) return;
 
 		vector acTotal = vector.Zero;
@@ -590,7 +595,7 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 		if (acTotalArea > 0) acTotal /= acTotalArea;
 		vector coa = owner.CoordToParent(acTotal + m_vAerodynamicCenterOffset);
 		Shape.CreateSphere(Color.BLUE, ShapeFlags.ONCE | ShapeFlags.NOZBUFFER, coa, 0.1);
-		if (physics) Shape.CreateSphere(Color.YELLOW, ShapeFlags.ONCE | ShapeFlags.NOZBUFFER, GetCenterOfMass(), 0.1);
+		if (owner.GetPhysics()) Shape.CreateSphere(Color.YELLOW, ShapeFlags.ONCE | ShapeFlags.NOZBUFFER, GetCenterOfMass(), 0.1);
 	}
 
 	//------------------------------------------------------------------------------------------------

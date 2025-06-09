@@ -11,7 +11,6 @@ class ADM_RigidbodyComponent: ScriptComponent
 	protected float m_fMass; // [kg]
 	protected vector m_vInertia[3]; // [kg*m^2]
 	protected vector m_vInertiaInv[3]; // 1/[kg*m^2]
-	protected Physics m_Physics;
 	
 	// ASSUMPTION: center of mass equals origin of model space!
 	override event protected void OnPostInit(IEntity owner)
@@ -26,11 +25,7 @@ class ADM_RigidbodyComponent: ScriptComponent
 	{
 		super.EOnInit(owner);
 		
-		if (owner.GetPhysics())
-		{
-			m_Physics = owner.GetPhysics();
-			m_fMass = m_Physics.GetMass();
-		}
+		m_fMass = owner.GetPhysics().GetMass();
 		
 		Math3D.MatrixIdentity3(m_vInertia);
 		m_vInertia[0][0] = m_vInertiaDiag[0];
@@ -47,7 +42,7 @@ class ADM_RigidbodyComponent: ScriptComponent
 	
 	void UpdateStoredTransform(IEntity owner)
 	{
-		COM = owner.CoordToParent(m_Physics.GetCenterOfMass());
+		COM = owner.CoordToParent(owner.GetPhysics().GetCenterOfMass());
 		owner.GetTransform(transform);
 		Q[0] = transform[0];
 		Q[1] = transform[1];
@@ -74,9 +69,9 @@ class ADM_RigidbodyComponent: ScriptComponent
 		transform[2] = Q[2];
 		transform[3] = COM;
 		owner.SetTransform(transform);
-		m_Physics.SetVelocity(v);
-		m_Physics.SetAngularVelocity(w);
-		m_Physics.SetMass(m_fMass);
+		owner.GetPhysics().SetVelocity(v);
+		owner.GetPhysics().SetAngularVelocity(w);
+		owner.GetPhysics().SetMass(m_fMass);
 	}
 	
 	vector CoordToLocal(vector worldCoord)
@@ -113,11 +108,11 @@ class ADM_RigidbodyComponent: ScriptComponent
 	
 	override void EOnSimulate(IEntity owner, float timeSlice)
 	{
-		if (!m_Physics)
+		if (!owner.GetPhysics())
 			return;
 		
-		v = m_Physics.GetVelocity();
-		w = m_Physics.GetAngularVelocity();
+		v = owner.GetPhysics().GetVelocity();
+		w = owner.GetPhysics().GetAngularVelocity();
 		
 		// TODO: replace GetTickCount with proper world time to include pausing/fast forward/etc.
 		float substepStartTime = System.GetTickCount();
