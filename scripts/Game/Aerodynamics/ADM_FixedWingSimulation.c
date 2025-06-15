@@ -122,9 +122,13 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 	
 	void OnDestroyed(int instigatorPlayerId)
 	{
-		m_bIsDestroyed = true;
-		ClearEventMask(GetOwner(), EntityEvent.FRAME);
-		DisconnectFromSystem();
+		if (m_DamageManager && m_DamageManager.IsDestroyed())
+		{
+			m_bIsDestroyed = true;
+			Print("airplane destroyed");
+			ClearEventMask(GetOwner(), EntityEvent.FRAME);
+			DisconnectFromSystem();
+		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
