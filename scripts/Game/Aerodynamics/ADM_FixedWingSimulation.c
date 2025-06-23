@@ -413,7 +413,7 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 		{
 			m_Wings[i].CalculatePanels();
 			acTotalArea += m_Wings[i].GetSurfaceArea();
-			acTotal += m_Wings[i].GetAerodynamicCenter();
+			acTotal += m_Wings[i].GetAerodynamicCenter() * m_Wings[i].GetSurfaceArea();
 		}
 		
 		if (acTotalArea > 0) acTotal /= acTotalArea;
