@@ -87,6 +87,7 @@ class ADM_FixedWingSimulation : ScriptGameComponent
 		if (m_pAerodynamicCenterOffset) 
 		{
 			m_pAerodynamicCenterOffset.Init(owner);
+			m_vAerodynamicCenterOffset = m_pAerodynamicCenterOffset.GetModelTransformAxis(3);
 		}
 		
 		if (m_SignalsManager) 
