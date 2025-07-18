@@ -106,15 +106,16 @@ class ADM_AirplaneControllerComponent: CarControllerComponent
 	
 	//------------------------------------------------------------------------------------------------
 	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	void Rpc_Server_ToggleEngine()
+	void Rpc_Server_ToggleEngine(int idx)
 	{
-		m_bIsEngineOn = !m_bIsEngineOn;
-		Replication.BumpMe();
-		
 		foreach(ADM_EngineComponent engine : m_Engines)
 		{
-			engine.SetEngineStatus(m_bIsEngineOn);
+			if (idx < 0 || engine.GetIndex() == idx) {
+				engine.SetEngineStatus(!engine.GetEngineStatus());
+				m_bIsEngineOn |= engine.GetEngineStatus();
+			}
 		}
+		Replication.BumpMe();
 	}
 	
 	//------------------------------------------------------------------------------------------------

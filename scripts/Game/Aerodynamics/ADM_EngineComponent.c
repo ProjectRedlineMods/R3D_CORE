@@ -74,8 +74,13 @@ class ADM_EngineComponent : ScriptComponent
 		m_DamageManager = SCR_VehicleDamageManagerComponent.Cast(owner.FindComponent(SCR_VehicleDamageManagerComponent));
 		
 		if (m_SignalManager) {
-			m_iRotationSignal = m_SignalManager.AddOrFindMPSignal("IntakeRotation", 1, 30, 0, SignalCompressionFunc.RotDEG);
+			m_iRotationSignal = m_SignalManager.AddOrFindMPSignal(string.Format("IntakeRotation%d", m_EngIndex), 1, 30, 0, SignalCompressionFunc.RotDEG);
 		}
+	}
+	
+	int GetIndex()
+	{
+		return m_EngIndex;
 	}
 	
 	override void EOnInit(IEntity owner)

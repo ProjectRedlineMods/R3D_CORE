@@ -67,7 +67,7 @@ class ADM_ControlSurface
 		if (trim)
 		{
 			m_fZeroAngle += delta;
-			m_fZeroAngle = Math.Clamp(m_fCurAngle, m_fMinAngle, m_fMaxAngle);
+			m_fZeroAngle = Math.Clamp(m_fZeroAngle, m_fMinAngle, m_fMaxAngle);
 		}
 		 
 		m_fCurAngle += delta;
