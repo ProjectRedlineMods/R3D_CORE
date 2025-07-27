@@ -115,6 +115,9 @@ class ADM_AirplaneControllerComponent: CarControllerComponent
 				m_bIsEngineOn |= engine.GetEngineStatus();
 			}
 		}
+		auto sigs = SignalsManagerComponent.Cast(GetOwner().FindComponent(SignalsManagerComponent));
+		int sig_idx = sigs.AddOrFindMPSignal("AircraftIsEngineOn", 1, 30, 0, SignalCompressionFunc.Bool);
+		sigs.SetSignalValue(sig_idx, m_bIsEngineOn);
 		Replication.BumpMe();
 	}
 	

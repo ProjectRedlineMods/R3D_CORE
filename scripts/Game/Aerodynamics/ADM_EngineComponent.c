@@ -50,6 +50,7 @@ class ADM_EngineComponent : ScriptComponent
 	protected float m_fMaxRPM;
 	
 	protected int m_iRotationSignal;
+	protected int m_iEngineOnSignal;
 	override void OnPostInit(IEntity owner)
 	{
 		super.OnPostInit(owner);

@@ -225,7 +225,10 @@ class ADM_AirplaneInput : ScriptComponent
 			return false;
 		
 		IEntity parent = player.GetParent();
-		return (parent && parent == GetOwner());
+		if (!parent || parent != GetOwner())
+			return false;
+		
+		return true;
 	}
 	
 	protected float m_fMaxCenterX;
