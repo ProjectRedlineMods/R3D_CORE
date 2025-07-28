@@ -92,6 +92,12 @@ class ADM_AirplaneControllerComponent: CarControllerComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	bool IsGearDeployed()
+	{
+		return m_bGearDeployed;
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	void ResetTrim()
 	{
 		m_FixedWingSim.ResetTrim();
@@ -122,6 +128,16 @@ class ADM_AirplaneControllerComponent: CarControllerComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void Rpc_Server_SetSignalValue(string name, float value)
+	{
+		auto sigs = SignalsManagerComponent.Cast(GetOwner().FindComponent(SignalsManagerComponent));
+		int sig_idx = sigs.AddOrFindMPSignal(name, 1, 30, 0, SignalCompressionFunc.None);
+		sigs.SetSignalValue(sig_idx, value);
+		Replication.BumpMe();
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	void ToggleGear()
 	{
 		Rpc(Rpc_Server_ToggleGear);	
@@ -139,5 +155,4 @@ class ADM_AirplaneControllerComponent: CarControllerComponent
 		}
 		Replication.BumpMe();
 	}
-	
 }
