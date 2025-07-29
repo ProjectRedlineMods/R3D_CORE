@@ -1,8 +1,5 @@
-class R3D_ToggleAircraftEngineAction : ScriptedUserAction
+class R3D_AircraftAutostart : ScriptedUserAction
 {
-	[Attribute(defvalue: "-1")]
-	int idx;
-	
 	ADM_AirplaneControllerComponent m_AirplaneController;
 	ADM_AirplaneInput m_Input;
 	
@@ -16,36 +13,19 @@ class R3D_ToggleAircraftEngineAction : ScriptedUserAction
 	{
 		if (Replication.IsServer())
 		{
-			m_AirplaneController.Rpc_Server_ToggleEngine(idx);
+			m_AirplaneController.Rpc_Server_TogglePower();
 		}
 	}
 	
 	override bool GetActionNameScript(out string outName)
 	{
-		bool myEngineOn = false;
-		
-		foreach(ADM_EngineComponent engine : m_AirplaneController.GetEngines())
-		{
-			if (idx < 0 || engine.GetIndex() == idx)
-				myEngineOn = engine.GetEngineStatus();
-		}
-		
-		if (myEngineOn)
-		{
-			outName = "Stop Engine";
-			if (idx != -1) outName += string.Format(" %1", idx);
-		}
-		else
-		{
-			outName = "Start Engine";
-			if (idx != -1) outName += string.Format(" %1", idx);
-		}
+		outName = "Perform Autostart";
 		return true;
 	}
 	
 	override bool CanBePerformedScript(IEntity user)
 	{
-		return m_AirplaneController.GetAPUStatus();
+		return !m_AirplaneController.IsAirplaneEngineOn();
 	}
 	
 	override bool CanBeShownScript(IEntity user)

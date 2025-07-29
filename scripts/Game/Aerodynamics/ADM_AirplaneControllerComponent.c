@@ -12,6 +12,12 @@ class ADM_AirplaneControllerComponent: CarControllerComponent
 	protected bool m_bIsEngineOn = false; //Set the engine to be off by default
 	
 	[RplProp()] 
+	protected bool m_bIsAPUOn = false;
+	
+	[RplProp()] 
+	protected bool m_bIsPowerOn = false;
+	
+	[RplProp()] 
 	protected bool m_bGearDeployed = true; // true = deployed, false = retracted
 
 	[Attribute(category: "Fixed Wing Simulation", defvalue: "0.1", desc: "Adjustment on actuation velocity when applying trim")]
@@ -92,6 +98,18 @@ class ADM_AirplaneControllerComponent: CarControllerComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	bool GetAPUStatus()
+	{
+		return m_bIsAPUOn;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	bool GetPowerStatus()
+	{
+		return m_bIsPowerOn;
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	bool IsGearDeployed()
 	{
 		return m_bGearDeployed;
@@ -124,6 +142,28 @@ class ADM_AirplaneControllerComponent: CarControllerComponent
 		auto sigs = SignalsManagerComponent.Cast(GetOwner().FindComponent(SignalsManagerComponent));
 		int sig_idx = sigs.AddOrFindMPSignal("AircraftIsEngineOn", 1, 30, 0, SignalCompressionFunc.Bool);
 		sigs.SetSignalValue(sig_idx, m_bIsEngineOn);
+		Replication.BumpMe();
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void Rpc_Server_ToggleAPU()
+	{
+		m_bIsAPUOn = !m_bIsAPUOn;
+		auto sigs = SignalsManagerComponent.Cast(GetOwner().FindComponent(SignalsManagerComponent));
+		int sig_idx = sigs.AddOrFindMPSignal("AircraftIsAPUOn", 1, 30, 0, SignalCompressionFunc.Bool);
+		sigs.SetSignalValue(sig_idx, m_bIsAPUOn);
+		Replication.BumpMe();
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	void Rpc_Server_TogglePower()
+	{
+		m_bIsPowerOn = !m_bIsPowerOn;
+		auto sigs = SignalsManagerComponent.Cast(GetOwner().FindComponent(SignalsManagerComponent));
+		int sig_idx = sigs.AddOrFindMPSignal("AircraftIsPowerOn", 1, 30, 0, SignalCompressionFunc.Bool);
+		sigs.SetSignalValue(sig_idx, m_bIsPowerOn);
 		Replication.BumpMe();
 	}
 	
