@@ -19,6 +19,9 @@ class R3D_ToggleAircraftRampAction : ScriptedUserAction
 	[Attribute()]
 	string m_sSignal;
 	
+	[Attribute()]
+	string m_RampName;
+	
 	[Attribute("", UIWidgets.Object)]
 	ref array<ref R3D_RampState> m_RampStates;
 	
@@ -80,7 +83,7 @@ class R3D_ToggleAircraftRampAction : ScriptedUserAction
 	{
 		int idx = NextState(m_CurrentState, GetOwner().GetPhysics().GetVelocity().LengthSq() > 1);
 		if (idx < 0) return false;
-		outName = string.Format("Set Ramp: %1", m_RampStates[idx].Name);
+		outName = string.Format("Set %1: %2", m_RampName, m_RampStates[idx].Name);
 		return true;
 	}
 	
