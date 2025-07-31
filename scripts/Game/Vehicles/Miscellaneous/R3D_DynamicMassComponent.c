@@ -39,6 +39,11 @@ class R3D_DynamicMassComponent : ScriptComponent
 		//m_Physics.GetInertiaTensor(m_vInitialInertiaTensor);
 	}
 	
+	void AddMass(float mass, vector localPos)
+	{
+		m_DynamicMassPoints.Insert(new R3D_DynamicMassPoint(mass, localPos));
+	}
+	
 	// Go back to initial state
 	void ResetInitialMassProperties()
 	{

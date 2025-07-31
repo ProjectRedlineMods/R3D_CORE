@@ -50,6 +50,6 @@ class R3D_ToggleAircraftEngineAction : ScriptedUserAction
 	
 	override bool CanBeShownScript(IEntity user)
 	{
-		return m_Input.IsControlActive();
+		return true; // todo pilot/copilot check
 	}
 }

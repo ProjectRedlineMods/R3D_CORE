@@ -37,6 +37,6 @@ class R3D_ToggleAircraftAPU : ScriptedUserAction
 	
 	override bool CanBePerformedScript(IEntity user)
 	{
-		return m_Input.IsControlActive();
+		return true; // todo pilot/copilot check
 	}
 }

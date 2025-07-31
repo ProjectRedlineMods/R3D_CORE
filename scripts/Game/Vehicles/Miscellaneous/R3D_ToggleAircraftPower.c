@@ -32,6 +32,6 @@ class R3D_ToggleAircraftPower : ScriptedUserAction
 	
 	override bool CanBePerformedScript(IEntity user)
 	{
-		return m_Input.IsControlActive();
+		return true; // todo pilot/copilot check
 	}
 }

@@ -22,6 +22,9 @@ class R3D_ToggleAircraftRampAction : ScriptedUserAction
 	[Attribute("", UIWidgets.Object)]
 	ref array<ref R3D_RampState> m_RampStates;
 	
+	[Attribute()]
+	int m_DefaultState = 0;
+	
 	int m_CountFlightStates = 0;
 	
 	int m_CurrentState = 0;
@@ -53,6 +56,12 @@ class R3D_ToggleAircraftRampAction : ScriptedUserAction
 				if (state.CanSetInFlight)
 					m_CountFlightStates += 1;
 			}
+		}
+		
+		m_CurrentState = m_DefaultState;
+		if (Replication.IsServer())
+		{
+			m_AirplaneController.Rpc_Server_SetSignalValue(m_sSignal, m_RampStates[m_CurrentState].RampAngle);
 		}
 	}
 	

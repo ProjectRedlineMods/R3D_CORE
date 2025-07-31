@@ -228,7 +228,16 @@ class ADM_AirplaneInput : ScriptComponent
 		if (!parent || parent != GetOwner())
 			return false;
 		
-		return true;
+		SCR_BaseCompartmentManagerComponent cmpmgr = SCR_BaseCompartmentManagerComponent.Cast(parent.FindComponent(SCR_BaseCompartmentManagerComponent));
+		ref array<BaseCompartmentSlot> cmps = {};
+		cmpmgr.GetCompartments(cmps);
+		foreach (BaseCompartmentSlot slot : cmps)
+		{
+			if (player == slot.GetOccupant() && slot.IsPiloting())
+				return true;
+		}
+		
+		return false;
 	}
 	
 	protected float m_fMaxCenterX;
